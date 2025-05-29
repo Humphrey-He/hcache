@@ -1,0 +1,58 @@
+# HCache Configuration File
+# This configuration file provides settings for the HCache in-memory caching system.
+# All settings have sensible defaults, but can be adjusted to fit your specific needs.
+
+cache:
+  enable: true                     # Whether to enable caching
+  name: "hcache"                   # Name of the cache instance (used in metrics and logs)
+  max_entries: 500000              # Maximum number of entries in the cache (0 = unlimited)
+  max_memory_bytes: 1073741824     # Maximum memory usage in bytes (1GB, 0 = unlimited)
+  default_ttl: 300s                # Default time-to-live for cache entries (0 = no expiration)
+  cleanup_interval: 30s            # Interval for cleaning expired entries
+
+storage:
+  engine: "in-memory"              # Storage backend: in-memory / file / redis
+  shard_count: 256                 # Number of shards for better concurrency
+  enable_ttl_tracking: true        # Whether to track TTL for entries
+  enable_compression: false        # Whether to compress large values
+  compression_threshold: 4096      # Minimum size in bytes for compression
+  enable_sharded_lock: true        # Whether to use fine-grained locking
+
+admission:
+  policy: "frequency-sketch"       # Admission policy: none / count-min / frequency-sketch
+  sample_rate: 0.01                # Sampling rate for admission policy
+  min_entries_for_admission: 100   # Minimum entries before admission control activates
+  window_size: 10000               # Window size for frequency counting
+  counters: 4                      # Number of counters for frequency sketch
+
+eviction:
+  policy: "lfu"                    # Eviction policy: lru / lfu / fifo / random
+  batch_size: 128                  # Number of entries to check in each eviction round
+  sample_ratio: 0.1                # Ratio of entries to sample during eviction
+  min_ttl_seconds: 10              # Minimum TTL for entries to be considered for eviction
+  max_eviction_ratio: 0.25         # Maximum ratio of entries to evict in one round
+
+metrics:
+  enable: true                     # Whether to enable metrics collection
+  level: "basic"                   # Metrics level: disabled / basic / detailed
+  prometheus_port: 2112            # Port for Prometheus metrics endpoint
+  export_interval: 10s             # Interval for exporting metrics
+  histogram_buckets: [0.1, 0.5, 1, 5, 10, 50, 100, 500]  # Latency histogram buckets (ms)
+
+log:
+  level: "info"                    # Log level: debug / info / warn / error
+  format: "json"                   # Log format: text / json
+  output: "stdout"                 # Log output: stdout / stderr / file
+  file_path: "/var/log/hcache.log" # Log file path (when output is "file")
+  max_size_mb: 100                 # Maximum log file size before rotation
+  max_backups: 3                   # Maximum number of old log files to retain
+  max_age_days: 28                 # Maximum number of days to retain old log files
+
+extensions:
+  # Additional extension-specific configurations can be added here
+  hot_reload:
+    enable: false                  # Whether to enable hot reloading of configuration
+    watch_interval: 30s            # Interval for checking configuration changes
+
+extra:
+  # Custom user-defined configurations can be added here 

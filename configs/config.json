@@ -1,0 +1,55 @@
+{
+  "cache": {
+    "enable": true,
+    "name": "hcache",
+    "max_entries": 500000,
+    "max_memory_bytes": 1073741824,
+    "default_ttl": "300s",
+    "cleanup_interval": "30s"
+  },
+  "storage": {
+    "engine": "in-memory",
+    "shard_count": 256,
+    "enable_ttl_tracking": true,
+    "enable_compression": false,
+    "compression_threshold": 4096,
+    "enable_sharded_lock": true
+  },
+  "admission": {
+    "policy": "frequency-sketch",
+    "sample_rate": 0.01,
+    "min_entries_for_admission": 100,
+    "window_size": 10000,
+    "counters": 4
+  },
+  "eviction": {
+    "policy": "lfu",
+    "batch_size": 128,
+    "sample_ratio": 0.1,
+    "min_ttl_seconds": 10,
+    "max_eviction_ratio": 0.25
+  },
+  "metrics": {
+    "enable": true,
+    "level": "basic",
+    "prometheus_port": 2112,
+    "export_interval": "10s",
+    "histogram_buckets": [0.1, 0.5, 1, 5, 10, 50, 100, 500]
+  },
+  "log": {
+    "level": "info",
+    "format": "json",
+    "output": "stdout",
+    "file_path": "/var/log/hcache.log",
+    "max_size_mb": 100,
+    "max_backups": 3,
+    "max_age_days": 28
+  },
+  "extensions": {
+    "hot_reload": {
+      "enable": false,
+      "watch_interval": "30s"
+    }
+  },
+  "extra": {}
+} 

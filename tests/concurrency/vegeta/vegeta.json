@@ -1,0 +1,32 @@
+{
+  "targets": [
+    {
+      "method": "GET",
+      "url": "http://localhost:8080/cache/get?key=test1",
+      "weight": 45
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:8080/cache/get?key=test2",
+      "weight": 45
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:8080/cache/set",
+      "body": "{\"key\":\"test1\",\"value\":\"test-value-1\"}",
+      "header": {
+        "Content-Type": ["application/json"]
+      },
+      "weight": 5
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:8080/cache/set",
+      "body": "{\"key\":\"test2\",\"value\":\"test-value-2\"}",
+      "header": {
+        "Content-Type": ["application/json"]
+      },
+      "weight": 5
+    }
+  ]
+} 
