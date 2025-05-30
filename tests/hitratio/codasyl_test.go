@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yourusername/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 // TestCODASYLPattern tests cache performance with CODASYL-like access patterns

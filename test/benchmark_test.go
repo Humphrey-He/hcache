@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yourusername/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 // BenchmarkCacheOperations benchmarks basic cache operations.

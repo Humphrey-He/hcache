@@ -11,8 +11,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/hcache/examples/http_server/model"
-	"github.com/yourusername/hcache/examples/http_server/service"
+	"github.com/noobtrump/hcache/examples/http_server/model"
+	"github.com/noobtrump/hcache/examples/http_server/service"
 )
 
 // ProductHandler handles HTTP requests for products.

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 // RequestLogger returns a middleware that logs request information

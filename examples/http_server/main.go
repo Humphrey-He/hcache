@@ -13,11 +13,11 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/hcache/examples/http_server/handler"
-	"github.com/yourusername/hcache/examples/http_server/middleware"
-	"github.com/yourusername/hcache/examples/http_server/service"
-	"github.com/yourusername/hcache/examples/http_server/storage"
-	"github.com/yourusername/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/examples/http_server/handler"
+	"github.com/noobtrump/hcache/examples/http_server/middleware"
+	"github.com/noobtrump/hcache/examples/http_server/service"
+	"github.com/noobtrump/hcache/examples/http_server/storage"
+	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 // main is the entry point for the HTTP server example.

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/yourusername/hcache/pkg/codec"
+	"github.com/noobtrump/hcache/pkg/codec"
 )
 
 // Config defines the configuration options for a cache instance.
@@ -97,6 +97,10 @@ type Config struct {
 	// Codec 是用于存储值的序列化编解码器
 	// 如果为nil，将使用默认的JSON编解码器
 	Codec codec.Codec `json:"-" yaml:"-"`
+
+	// Loader is the data loader for the cache
+	// 缓存的数据加载器
+	Loader interface{}
 }
 
 // NewDefaultConfig returns a Config with sensible default values.

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yourusername/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 // TestMain 是测试的入口点

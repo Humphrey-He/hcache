@@ -25,6 +25,20 @@ func (f LoaderFunc[T]) Load(ctx context.Context, key string) (T, time.Duration, 
 	return f(ctx, key)
 }
 
+// NewFunctionLoader creates a new Loader from a function that retrieves data.
+// The function should return the value and an error. The TTL will be set to the default.
+func NewFunctionLoader[T any](fn func(ctx context.Context, key string) (T, error)) Loader[T] {
+	return LoaderFunc[T](func(ctx context.Context, key string) (T, time.Duration, error) {
+		value, err := fn(ctx, key)
+		return value, 0, err // Use default TTL
+	})
+}
+
+// NewFunctionLoaderWithTTL creates a new Loader from a function that retrieves data and specifies TTL.
+func NewFunctionLoaderWithTTL[T any](fn func(ctx context.Context, key string) (T, time.Duration, error)) Loader[T] {
+	return LoaderFunc[T](fn)
+}
+
 // BatchLoader is the interface for loading multiple keys at once.
 //
 // LoadBatch retrieves data for multiple keys from a data source.

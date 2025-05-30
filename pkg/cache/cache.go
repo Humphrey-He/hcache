@@ -38,6 +38,21 @@ type ICache interface {
 	//   - error: Error if the retrieval operation failed
 	Get(ctx context.Context, key string) (interface{}, bool, error)
 
+	// GetOrLoad retrieves a value from the cache, or loads it from a configured data loader if not found.
+	// If a loader is not configured, this method behaves similarly to Get and returns an error if the key is not found.
+	//
+	// GetOrLoad 从缓存中检索值，如果未找到则从配置的数据加载器中加载。
+	// 如果未配置加载器，此方法的行为类似于Get，并在未找到键时返回错误。
+	//
+	// Parameters:
+	//   - ctx: Context for the operation, can be used for cancellation
+	//   - key: The key to retrieve
+	//
+	// Returns:
+	//   - interface{}: The cached or loaded value
+	//   - error: Error if the retrieval or loading operation failed
+	GetOrLoad(ctx context.Context, key string) (interface{}, error)
+
 	// Set adds a value to the cache with the specified TTL.
 	// If the key already exists, its value is updated.
 	// If ttl is 0, the default TTL from the configuration is used.

@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yourusername/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 // BenchmarkCache runs a series of benchmarks on the cache with different configurations.

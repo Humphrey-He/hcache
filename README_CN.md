@@ -2,11 +2,11 @@
 
 <div align="center">
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/yourusername/hcache.svg)](https://pkg.go.dev/github.com/yourusername/hcache)
-[![Go Report Card](https://goreportcard.com/badge/github.com/yourusername/hcache)](https://goreportcard.com/report/github.com/yourusername/hcache)
-[![License](https://img.shields.io/github/license/yourusername/hcache)](LICENSE)
-[![Build Status](https://github.com/yourusername/hcache/workflows/build/badge.svg)](https://github.com/yourusername/hcache/actions)
-[![Coverage](https://codecov.io/gh/yourusername/hcache/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/hcache)
+[![Go Reference](https://pkg.go.dev/badge/github.com/noobtrump/hcache.svg)](https://pkg.go.dev/github.com/noobtrump/hcache)
+[![Go Report Card](https://goreportcard.com/badge/github.com/noobtrump/hcache)](https://goreportcard.com/report/github.com/noobtrump/hcache)
+[![License](https://img.shields.io/github/license/noobtrump/hcache)](LICENSE)
+[![Build Status](https://github.com/noobtrump/hcache/workflows/build/badge.svg)](https://github.com/noobtrump/hcache/actions)
+[![Coverage](https://codecov.io/gh/noobtrump/hcache/branch/main/graph/badge.svg)](https://codecov.io/gh/noobtrump/hcache)
 
 <p>一个高性能、功能丰富的 Go 语言内存缓存库</p>
 </div>
@@ -43,7 +43,7 @@
 ## 📦 安装
 
 ```bash
-go get github.com/yourusername/hcache
+go get github.com/noobtrump/hcache
 ```
 
 ## 🚀 快速开始
@@ -56,7 +56,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/yourusername/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 func main() {
@@ -118,7 +118,7 @@ fmt.Printf("命中: %d, 未命中: %d, 命中率: %.2f%%\n",
 ### 缓存旁路模式
 
 ```go
-import "github.com/yourusername/hcache/pkg/loader"
+import "github.com/noobtrump/hcache/pkg/loader"
 
 // 创建数据加载器
 userLoader := loader.NewFunctionLoader(func(ctx context.Context, key string) (interface{}, error) {
@@ -218,7 +218,7 @@ cache, err := cache.NewWithOptions("myCache",
 ### 自定义序列化
 
 ```go
-import "github.com/yourusername/hcache/pkg/codec"
+import "github.com/noobtrump/hcache/pkg/codec"
 
 // 创建自定义编解码器
 myCodec := codec.NewJSONCodec()
@@ -232,7 +232,7 @@ c, err := cache.NewWithOptions("myCache",
 ### 自定义准入策略
 
 ```go
-import "github.com/yourusername/hcache/pkg/admission"
+import "github.com/noobtrump/hcache/pkg/admission"
 
 // 创建自定义准入策略
 myPolicy := admission.NewTinyLFU(10000)

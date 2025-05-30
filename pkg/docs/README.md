@@ -17,7 +17,7 @@ HCache is a high-performance, feature-rich in-memory cache library for Go applic
 ## Installation
 
 ```bash
-go get github.com/yourusername/hcache
+go get github.com/noobtrump/hcache
 ```
 
 ## Quick Start
@@ -30,7 +30,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/yourusername/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 func main() {
@@ -125,7 +125,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/yourusername/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 func main() {
@@ -158,8 +158,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/yourusername/hcache/pkg/cache"
-	"github.com/yourusername/hcache/pkg/codec"
+	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/noobtrump/hcache/pkg/codec"
 )
 
 type User struct {

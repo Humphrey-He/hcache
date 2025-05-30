@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 )
@@ -14,6 +15,7 @@ type MockCache struct {
 	stats      Stats
 	maxEntries int
 	policy     string
+	dataLoader interface{} // This would be a proper loader type in full implementation
 }
 
 type mockEntry struct {
@@ -189,4 +191,21 @@ func (c *MockCache) evict() {
 		delete(c.data, keyToEvict)
 		c.stats.Evictions++
 	}
+}
+
+// GetOrLoad retrieves a value from the cache, or returns an error if not found.
+// This mock implementation doesn't actually load data from anywhere.
+func (c *MockCache) GetOrLoad(ctx context.Context, key string) (interface{}, error) {
+	// First try to get from cache
+	value, found, err := c.Get(ctx, key)
+	if err != nil {
+		return nil, err
+	}
+
+	if found {
+		return value, nil
+	}
+
+	// Mock implementation just returns an error when key not found
+	return nil, fmt.Errorf("key not found in mock cache: %s", key)
 }

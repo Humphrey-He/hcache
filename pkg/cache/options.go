@@ -3,7 +3,7 @@ package cache
 import (
 	"time"
 
-	"github.com/yourusername/hcache/pkg/codec"
+	"github.com/noobtrump/hcache/pkg/codec"
 )
 
 // Option is a function that configures a Config.
@@ -234,6 +234,23 @@ func WithShardedLock(enabled bool) Option {
 func WithCodec(codec codec.Codec) Option {
 	return func(c *Config) {
 		c.Codec = codec
+	}
+}
+
+// WithLoader sets the data loader for the cache.
+// The loader is used to load data when a cache miss occurs.
+//
+// WithLoader 设置缓存的数据加载器。
+// 当缓存未命中时，加载器用于加载数据。
+//
+// Parameters:
+//   - loader: The data loader to use
+//
+// Returns:
+//   - Option: A configuration option
+func WithLoader(loader interface{}) Option {
+	return func(c *Config) {
+		c.Loader = loader
 	}
 }
 
