@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 )
 
 // TestSearchPattern tests cache performance with search-like access patterns
@@ -41,19 +41,32 @@ func TestSearchPattern(t *testing.T) {
 
 				hits, misses, evictions := runSearchTest(ctx, c, totalOps, popularTerms, rareProbability)
 
-				// Report results
-				// 报告结果
-				hitRatio := float64(hits) / float64(totalOps) * 100
+				// 验证hits+misses的总数
+				totalAccesses := hits + misses
+				// 预期的访问次数应该约等于totalOps
+				expectedAccessesBase := totalOps
+				expectedAccessesMin := expectedAccessesBase - expectedAccessesBase/10 // 下限：基准值 - 10%
+				expectedAccessesMax := expectedAccessesBase + expectedAccessesBase/10 // 上限：基准值 + 10%
+
+				if totalAccesses < expectedAccessesMin || totalAccesses > expectedAccessesMax {
+					t.Logf("警告: 实际访问总数 (%d) 与预期范围 (%d-%d) 不符",
+						totalAccesses, expectedAccessesMin, expectedAccessesMax)
+				}
+
+				// Report results - 修正的命中率计算
+				// 报告结果 - 修正的命中率计算
+				hitRatio := float64(hits) / float64(hits+misses) * 100
 				evictionRatio := float64(evictions) / float64(totalOps) * 100
 
 				t.Logf("测试结果:")
 				t.Logf("总操作数: %d", totalOps)
+				t.Logf("总访问次数: %d", hits+misses)
 				t.Logf("命中数: %d", hits)
 				t.Logf("未命中数: %d", misses)
 				t.Logf("命中率: %.2f%%", hitRatio)
 				t.Logf("淘汰数: %d", evictions)
 				t.Logf("淘汰比率: %.2f%%", evictionRatio)
-				t.Logf("持续时间: %v", time.Since(time.Now().Add(-time.Second))) // Approximate duration (近似持续时间)
+				t.Logf("持续时间: %v", time.Since(time.Now().Add(-time.Second))) // Approximate duration
 			})
 		}
 	}

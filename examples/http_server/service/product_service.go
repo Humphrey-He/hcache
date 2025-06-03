@@ -13,9 +13,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/noobtrump/hcache/examples/http_server/model"
-	"github.com/noobtrump/hcache/examples/http_server/storage"
-	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/Humphrey-He/hcache/examples/http_server/model"
+	"github.com/Humphrey-He/hcache/examples/http_server/storage"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 )
 
 // ProductService handles product business logic with caching.

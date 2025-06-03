@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/codec"
+	"github.com/Humphrey-He/hcache/pkg/codec"
 )
 
 // Config defines the configuration options for a cache instance.

@@ -18,7 +18,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 )
 
 // StressTestConfig holds the configuration for the stress test.

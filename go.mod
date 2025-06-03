@@ -1,6 +1,8 @@
-module github.com/noobtrump/hcache
+module github.com/Humphrey-He/hcache
 
-go 1.22.0
+go 1.23.0
+
+toolchain go1.23.6
 
 require (
 	github.com/fsnotify/fsnotify v1.9.0

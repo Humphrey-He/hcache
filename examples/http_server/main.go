@@ -12,12 +12,12 @@ import (
 	"log"
 	"time"
 
+	"github.com/Humphrey-He/hcache/examples/http_server/handler"
+	"github.com/Humphrey-He/hcache/examples/http_server/middleware"
+	"github.com/Humphrey-He/hcache/examples/http_server/service"
+	"github.com/Humphrey-He/hcache/examples/http_server/storage"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 	"github.com/gin-gonic/gin"
-	"github.com/noobtrump/hcache/examples/http_server/handler"
-	"github.com/noobtrump/hcache/examples/http_server/middleware"
-	"github.com/noobtrump/hcache/examples/http_server/service"
-	"github.com/noobtrump/hcache/examples/http_server/storage"
-	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 // main is the entry point for the HTTP server example.

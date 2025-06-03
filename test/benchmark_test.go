@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 )
 
 // BenchmarkCacheOperations benchmarks basic cache operations.
@@ -419,9 +419,9 @@ func benchmarkMixed(b *testing.B, ctx context.Context, cacheInstance cache.ICach
 	})
 }
 
-// benchmarkZipfianAccess benchmarks cache access with a zipfian distribution.
-// This simulates real-world access patterns where some keys are much more popular than others,
-// which is common in many applications (e.g., social media, news sites).
+// benchmarkZipfianAccess benchmarks cache performance with zipfian access patterns.
+// It simulates real-world access patterns where some keys are accessed much more
+// frequently than others, following a power law distribution.
 //
 // Parameters:
 //   - b: The benchmark context
@@ -430,9 +430,8 @@ func benchmarkMixed(b *testing.B, ctx context.Context, cacheInstance cache.ICach
 //   - keys: The keys to use for the benchmark
 //   - values: The values to use for the benchmark
 //
-// benchmarkZipfianAccess 使用齐普夫分布对缓存访问进行基准测试。
-// 这模拟了真实世界的访问模式，其中某些键比其他键更受欢迎，
-// 这在许多应用程序中很常见（例如，社交媒体、新闻网站）。
+// benchmarkZipfianAccess 对缓存在齐普夫访问模式下的性能进行基准测试。
+// 它模拟现实世界的访问模式，其中一些键比其他键访问频率高得多，遵循幂律分布。
 //
 // 参数:
 //   - b: 基准测试上下文
@@ -450,28 +449,41 @@ func benchmarkZipfianAccess(b *testing.B, ctx context.Context, cacheInstance cac
 		}
 	}
 
-	// Create zipfian distribution
-	// 创建齐普夫分布
-	zipf := rand.NewZipf(rand.New(rand.NewSource(time.Now().UnixNano())), 1.5, 1.0, uint64(len(keys)-1))
-
 	b.ResetTimer()
 	b.ReportAllocs()
 	b.RunParallel(func(pb *testing.PB) {
+		// 在每个并发goroutine中创建独立的随机数生成器和Zipf对象
+		// Create separate random number generator and Zipf object for each goroutine
+		localRand := rand.New(rand.NewSource(time.Now().UnixNano()))
+		keyCount := uint64(len(keys))
+		if keyCount <= 1 {
+			b.Fatal("Not enough keys for zipfian access test")
+		}
+		zipf := rand.NewZipf(localRand, 1.5, 1.0, keyCount-1)
+
 		for pb.Next() {
-			// Get a zipfian distributed index
-			// 获取齐普夫分布的索引
-			idx := zipf.Uint64()
-			key := keys[idx%uint64(len(keys))]
+			// 获取齐普夫分布的索引，并确保在有效范围内
+			// Get a zipfian distributed index and ensure it's in valid range
+			idx := zipf.Uint64() % keyCount
+			if idx >= keyCount {
+				idx = keyCount - 1
+			}
+
+			key := keys[idx]
 
 			// 80% reads, 20% writes
 			// 80%读取，20%写入
-			if rand.Intn(100) < 80 {
+			if localRand.Intn(100) < 80 {
 				_, _, err := cacheInstance.Get(ctx, key)
 				if err != nil {
 					b.Fatalf("Failed to get from cache: %v", err)
 				}
 			} else {
-				err := cacheInstance.Set(ctx, key, values[idx%uint64(len(values))], time.Hour)
+				valIdx := idx
+				if valIdx >= uint64(len(values)) {
+					valIdx = uint64(len(values)) - 1
+				}
+				err := cacheInstance.Set(ctx, key, values[valIdx], time.Hour)
 				if err != nil {
 					b.Fatalf("Failed to set cache: %v", err)
 				}

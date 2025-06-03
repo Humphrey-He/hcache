@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Humphrey-He/hcache/pkg/cache"
 	"github.com/gin-gonic/gin"
-	"github.com/noobtrump/hcache/pkg/cache"
 )
 
 // RequestLogger returns a middleware that logs request information

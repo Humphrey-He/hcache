@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/noobtrump/hcache/examples/http_server/model"
+	"github.com/Humphrey-He/hcache/examples/http_server/model"
 )
 
 // ProductStorage simulates a database for product data

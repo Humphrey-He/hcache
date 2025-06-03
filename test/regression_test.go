@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 )
 
 // createTestCache creates a mock cache instance for testing purposes.

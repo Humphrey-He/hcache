@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 )
 
 // TestCODASYLPattern tests cache performance with CODASYL-like access patterns
@@ -40,13 +40,27 @@ func TestCODASYLPattern(t *testing.T) {
 
 				hits, misses, evictions := runCODASYLTest(ctx, c, totalOps, nodeCount, edgesPerNode, traversalLength)
 
-				// Report results
-				// 报告结果
-				hitRatio := float64(hits) / float64(totalOps) * 100
-				evictionRatio := float64(evictions) / float64(totalOps) * 100
+				// 验证hits+misses的总数
+				totalAccesses := hits + misses
+				// 预期的访问次数应该约等于 totalOps * traversalLength
+				// 计算预期的最小和最大访问次数 (允许10%的误差)
+				expectedAccessesBase := totalOps * traversalLength
+				expectedAccessesMin := expectedAccessesBase - expectedAccessesBase/10 // 下限：基准值 - 10%
+				expectedAccessesMax := expectedAccessesBase + expectedAccessesBase/10 // 上限：基准值 + 10%
+
+				if totalAccesses < expectedAccessesMin || totalAccesses > expectedAccessesMax {
+					t.Logf("警告: 实际访问总数 (%d) 与预期范围 (%d-%d) 不符",
+						totalAccesses, expectedAccessesMin, expectedAccessesMax)
+				}
+
+				// Report results - 修正的命中率计算
+				// 报告结果 - 修正的命中率计算
+				hitRatio := float64(hits) / float64(hits+misses) * 100
+				evictionRatio := float64(evictions) / float64(totalOps) * 100 // 这里保持不变，因为它是相对于操作次数的
 
 				t.Logf("测试结果:")
 				t.Logf("总操作数: %d", totalOps)
+				t.Logf("总访问次数: %d", hits+misses)
 				t.Logf("命中数: %d", hits)
 				t.Logf("未命中数: %d", misses)
 				t.Logf("命中率: %.2f%%", hitRatio)

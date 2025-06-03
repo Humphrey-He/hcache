@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 )
 
 // 服务器配置

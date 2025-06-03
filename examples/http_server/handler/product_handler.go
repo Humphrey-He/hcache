@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Humphrey-He/hcache/examples/http_server/model"
+	"github.com/Humphrey-He/hcache/examples/http_server/service"
 	"github.com/gin-gonic/gin"
-	"github.com/noobtrump/hcache/examples/http_server/model"
-	"github.com/noobtrump/hcache/examples/http_server/service"
 )
 
 // ProductHandler handles HTTP requests for products.

@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/noobtrump/hcache/internal/storage"
+	"github.com/Humphrey-He/hcache/internal/storage"
 )
 
 // Cleaner 提供高效的过期项清理机制

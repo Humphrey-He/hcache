@@ -3,7 +3,7 @@ package cache
 import (
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/codec"
+	"github.com/Humphrey-He/hcache/pkg/codec"
 )
 
 // Option is a function that configures a Config.
@@ -252,32 +252,4 @@ func WithLoader(loader interface{}) Option {
 	return func(c *Config) {
 		c.Loader = loader
 	}
-}
-
-// NewWithOptions creates a new cache with the given options.
-// This is a convenience function that applies the provided options to a new cache.
-//
-// NewWithOptions 使用给定选项创建新的缓存。
-// 这是一个便捷函数，将提供的选项应用于新缓存。
-//
-// Parameters:
-//   - name: The name of the cache
-//   - options: A list of configuration options
-//
-// Returns:
-//   - ICache: The created cache instance
-//   - error: An error if the cache creation fails
-func NewWithOptions(name string, options ...Option) (ICache, error) {
-	config := NewDefaultConfig()
-	config.Name = name
-
-	// Apply all options
-	// 应用所有选项
-	for _, option := range options {
-		option(config)
-	}
-
-	// For testing purposes, return a mock implementation
-	// 出于测试目的，返回一个模拟实现
-	return NewMockCache(name, config.MaxEntries, config.EvictionPolicy), nil
 }

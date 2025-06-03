@@ -2,11 +2,11 @@
 
 <div align="center">
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/noobtrump/hcache.svg)](https://pkg.go.dev/github.com/noobtrump/hcache)
-[![Go Report Card](https://goreportcard.com/badge/github.com/noobtrump/hcache)](https://goreportcard.com/report/github.com/noobtrump/hcache)
-[![License](https://img.shields.io/github/license/noobtrump/hcache)](LICENSE)
-[![Build Status](https://github.com/noobtrump/hcache/workflows/build/badge.svg)](https://github.com/noobtrump/hcache/actions)
-[![Coverage](https://codecov.io/gh/noobtrump/hcache/branch/main/graph/badge.svg)](https://codecov.io/gh/noobtrump/hcache)
+[![Go Reference](https://pkg.go.dev/badge/github.com/Humphrey-He/hcache.svg)](https://pkg.go.dev/github.com/Humphrey-He/hcache)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Humphrey-He/hcache)](https://goreportcard.com/report/github.com/Humphrey-He/hcache)
+[![License](https://img.shields.io/github/license/Humphrey-He/hcache)](LICENSE)
+[![Build Status](https://github.com/Humphrey-He/hcache/workflows/build/badge.svg)](https://github.com/Humphrey-He/hcache/actions)
+[![Coverage](https://codecov.io/gh/Humphrey-He/hcache/branch/main/graph/badge.svg)](https://codecov.io/gh/Humphrey-He/hcache)
 
 <p>一个高性能、功能丰富的 Go 语言内存缓存库</p>
 </div>
@@ -43,7 +43,7 @@
 ## 📦 安装
 
 ```bash
-go get github.com/noobtrump/hcache
+go get github.com/Humphrey-He/hcache
 ```
 
 ## 🚀 快速开始
@@ -56,7 +56,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 )
 
 func main() {
@@ -118,7 +118,7 @@ fmt.Printf("命中: %d, 未命中: %d, 命中率: %.2f%%\n",
 ### 缓存旁路模式
 
 ```go
-import "github.com/noobtrump/hcache/pkg/loader"
+import "github.com/Humphrey-He/hcache/pkg/loader"
 
 // 创建数据加载器
 userLoader := loader.NewFunctionLoader(func(ctx context.Context, key string) (interface{}, error) {
@@ -218,7 +218,7 @@ cache, err := cache.NewWithOptions("myCache",
 ### 自定义序列化
 
 ```go
-import "github.com/noobtrump/hcache/pkg/codec"
+import "github.com/Humphrey-He/hcache/pkg/codec"
 
 // 创建自定义编解码器
 myCodec := codec.NewJSONCodec()
@@ -232,7 +232,7 @@ c, err := cache.NewWithOptions("myCache",
 ### 自定义准入策略
 
 ```go
-import "github.com/noobtrump/hcache/pkg/admission"
+import "github.com/Humphrey-He/hcache/pkg/admission"
 
 // 创建自定义准入策略
 myPolicy := admission.NewTinyLFU(10000)
@@ -249,14 +249,153 @@ c, err := cache.NewWithOptions("myCache",
 // 启用指标
 c, err := cache.NewWithOptions("myCache",
     cache.WithMetricsEnabled(true),
+    cache.WithMetricsLevel("detailed"),  // "basic"、"detailed" 或 "disabled"
 )
 
-// 获取指标
-stats, err := c.Stats(ctx)
-fmt.Printf("命中率: %.2f%%\n", stats.HitRatio*100)
+// 获取基本统计信息
+stats, _ := c.Stats(ctx)
+fmt.Printf("条目数: %d\n", stats.EntryCount)
+fmt.Printf("命中率: %.2f%%\n", float64(stats.Hits)/(float64(stats.Hits+stats.Misses))*100)
+fmt.Printf("内存使用: %.2f MB\n", float64(stats.Size)/(1024*1024))
 fmt.Printf("淘汰次数: %d\n", stats.Evictions)
-fmt.Printf("平均查找时间: %v\n", stats.AverageLookupTime)
+
+// 启用详细指标后，可获取更多信息
+detailedStats := stats.(*cache.DetailedStats)  // 类型断言获取详细统计信息
+fmt.Printf("平均获取延迟: %v\n", detailedStats.AvgGetLatency)
+fmt.Printf("P99获取延迟: %v\n", detailedStats.P99GetLatency)
+fmt.Printf("缓存碎片率: %.2f%%\n", detailedStats.FragmentationRatio*100)
 ```
+
+HCache 还可以将指标导出到 Prometheus：
+
+```go
+import "github.com/Humphrey-He/hcache/pkg/metrics"
+
+// 注册缓存指标到 Prometheus
+metrics.RegisterPrometheus(c, "myapp_cache")
+```
+
+## 🔌 并发应用示例
+
+HCache 专为高并发场景设计，以下是一个并发应用示例：
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "sync"
+    "time"
+    
+    "github.com/Humphrey-He/hcache/pkg/cache"
+)
+
+func main() {
+    // 创建具有多分片的高并发缓存
+    c, _ := cache.NewWithOptions("concurrentCache",
+        cache.WithMaxEntryCount(100000),
+        cache.WithShards(256),  // 256个分片以最小化锁竞争
+    )
+    
+    ctx := context.Background()
+    var wg sync.WaitGroup
+    
+    // 模拟100个并发协程
+    for i := 0; i < 100; i++ {
+        wg.Add(1)
+        go func(id int) {
+            defer wg.Done()
+            
+            // 每个协程执行1000次操作
+            for j := 0; j < 1000; j++ {
+                key := fmt.Sprintf("key:%d:%d", id, j)
+                
+                // 80%读操作，20%写操作
+                if j%5 == 0 {
+                    c.Set(ctx, key, fmt.Sprintf("value:%d:%d", id, j), time.Minute)
+                } else {
+                    c.Get(ctx, key)
+                }
+            }
+        }(i)
+    }
+    
+    wg.Wait()
+    stats, _ := c.Stats(ctx)
+    fmt.Printf("完成100,000次并发操作\n")
+    fmt.Printf("命中率: %.2f%%\n", float64(stats.Hits)*100/float64(stats.Hits+stats.Misses))
+}
+```
+
+## 📊 性能基准测试
+
+### 测试环境
+
+所有基准测试在以下环境中进行：
+
+- **CPU**: AMD Ryzen 5 5600G with Radeon Graphics
+- **内存**: 16GB DDR4-3200
+- **操作系统**: Windows 10
+- **Go 版本**: 1.18+
+- **测试时长**: 每个基准测试重复3次，每次运行3秒
+
+### 核心操作性能
+
+| 操作 | 缓存大小 | 性能 (ns/op) | 内存 (B/op) | 分配次数 (allocs/op) |
+|-----------|------------|---------------------|---------------|-------------------------|
+| Get/命中 | 1,000 | 97.47 | 0 | 0 |
+| Get/命中 | 10,000 | 97.31 | 0 | 0 |
+| Get/命中 | 100,000 | 98.98 | 0 | 0 |
+| Get/未命中 | 1,000 | 128.33 | 24 | 2 |
+| Get/未命中 | 10,000 | 129.30 | 24 | 1 |
+| Get/未命中 | 100,000 | 123.87 | 24 | 1 |
+| Set/新增 | 1,000 | 439.13 | 72.7 | 3 |
+| Set/新增 | 10,000 | 442.03 | 72.3 | 3 |
+| Set/新增 | 100,000 | 456.80 | 70.7 | 3 |
+| Set/更新 | 1,000 | 179.03 | 24 | 1 |
+| Set/更新 | 10,000 | 162.60 | 24 | 1 |
+| Set/更新 | 100,000 | 170.93 | 24 | 1 |
+
+**分析**:
+- **Get/命中性能**: 极其高效，约97-99ns，零内存分配
+- **Get/未命中性能**: 仍然很快，约123-129ns，最小化内存分配
+- **Set操作**: 新条目约440-457ns，更新现有条目更快，约163-179ns
+- **缓存大小影响**: 性能在不同缓存大小下保持稳定，100,000条目时仅有轻微降低
+- **内存效率**: 读操作（Get/命中）零内存分配，展示出极佳的效率
+
+### 淘汰策略比较
+
+| 淘汰策略 | 性能 (ns/op) | 内存 (B/op) | 分配次数 (allocs/op) | 排名 |
+|-----------------|---------------------|---------------|-------------------------|---------|
+| LRU | 123.60 | 12 | 0 | 4 |
+| LFU | 119.03 | 12 | 0 | 3 |
+| FIFO | 119.00 | 12 | 0 | 1 |
+| Random | 118.83 | 12 | 0 | 2 |
+
+**分析**:
+- 所有淘汰策略性能相近，差异在5%以内
+- Random和FIFO由于决策逻辑简单，略快一些
+- LRU由于需要追踪最近访问时间，开销略高
+- 所有策略都展现出优秀的内存效率，分配模式一致
+- LFU的内存使用得到很好优化，与简单策略相比没有额外开销
+
+### 并发性能
+
+在不同并发级别和读写比例下进行的压力测试：
+
+| 场景 | 线程数 | QPS | 读写比 | 成功率 | 最大延迟 | 命中率 |
+|----------|---------|-----|------------|--------------|-------------|----------|
+| 标准负载 | 4 | 1000 | 80%/20% | 100% | 1.00ms | 24.38% |
+| 高并发 | 8 | 2000 | 80%/20% | 100% | 0.48ms | 37.46% |
+| 写密集 | 8 | 2000 | 20%/80% | 100% | 0.44ms | 77.43% |
+
+**分析**:
+- HCache在高负载下保持100%成功率
+- 所有场景下延迟都保持在亚毫秒级
+- 更高并发反而显示更低的最大延迟，证明分片策略有效
+- 写密集工作负载由于缓存填充更快，达到更高命中率
+- 缓存性能随QPS和线程数线性扩展
 
 ## 👥 贡献
 

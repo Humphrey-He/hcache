@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/noobtrump/hcache/pkg/cache"
+	"github.com/Humphrey-He/hcache/pkg/cache"
 )
 
 // Constants for tests
